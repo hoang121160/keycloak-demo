@@ -1,0 +1,11 @@
+# Sử dụng base image của Nginx
+FROM nginx:latest
+
+# Copy file cấu hình nginx vào container
+COPY ./nginx.conf /etc/nginx/nginx.conf
+
+# Copy chứng chỉ SSL (nếu có) vào container
+COPY ./ssl /etc/ssl
+
+# Expose cổng HTTP và HTTPS
+EXPOSE 80 443

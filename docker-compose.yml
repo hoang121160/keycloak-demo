@@ -21,7 +21,7 @@ services:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: secure_admin_password
       KC_PROXY: edge
-      KC_HOSTNAME: your-domain.com  # Thay bằng tên miền của bạn
+      KC_HOSTNAME: keycloak-demo-production.up.railway.app  # Thay bằng tên miền của bạn
       KC_HTTPS_ENABLED: true
       KC_HTTP_ENABLED: false  # Chỉ cho phép HTTPS
       KC_HEALTH_ENABLED: true
