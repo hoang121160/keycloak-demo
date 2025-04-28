@@ -1,0 +1,45 @@
+services:
+  postgres:
+    image: postgres:latest
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: secure_password
+    ports:
+      - 5432:5432
+    networks:
+      - keycloak-network
+  keycloak:
+    image: keycloak-deployment-keycloak:latest  # Image bạn vừa build
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: secure_password
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: secure_admin_password
+      KC_PROXY: edge
+      KC_HOSTNAME: your-domain.com  # Thay bằng tên miền của bạn
+      KC_HTTPS_ENABLED: true
+      KC_HTTP_ENABLED: false  # Chỉ cho phép HTTPS
+      KC_HEALTH_ENABLED: true
+      KC_LOG_LEVEL: info
+      JAVA_OPTS: "-Xms512m -Xmx2048m"  # Giới hạn RAM
+    ports:
+      - 8443:8443  # Sử dụng port 8443 cho HTTPS
+    depends_on:
+      - postgres
+    networks:
+      - keycloak-network
+    volumes:
+      - ./keycloak/conf:/opt/keycloak/conf  # Mount thư mục cấu hình
+      - ./keycloak/data:/opt/keycloak/data  # Mount thư mục dữ liệu
+      - ./certs:/opt/keycloak/conf/certs  # Mount chứng chỉ SSL
+networks:
+  keycloak-network:
+    driver: bridge
+volumes:
+  postgres_data:
+    driver: local
