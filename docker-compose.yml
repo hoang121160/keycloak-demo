@@ -1,3 +1,5 @@
+version: '3.7'
+
 services:
   postgres:
     image: postgres:latest
@@ -11,6 +13,7 @@ services:
       - 5432:5432
     networks:
       - keycloak-network
+
   keycloak:
     image: keycloak-deployment-keycloak:latest  # Image bạn vừa build
     environment:
@@ -27,6 +30,9 @@ services:
       KC_HEALTH_ENABLED: true
       KC_LOG_LEVEL: info
       JAVA_OPTS: "-Xms512m -Xmx2048m"  # Giới hạn RAM
+      KC_KEYSTORE_FILE: /opt/keycloak/conf/certs/cert.pem  # Chứng chỉ SSL
+      KC_KEYSTORE_PASSWORD: secure_password  # Mật khẩu cho chứng chỉ
+      KC_KEYSTORE_TYPE: PEM  # Kiểu chứng chỉ (PEM, JKS,...)
     ports:
       - 8443:8443  # Sử dụng port 8443 cho HTTPS
     depends_on:
@@ -37,9 +43,11 @@ services:
       - ./keycloak/conf:/opt/keycloak/conf  # Mount thư mục cấu hình
       - ./keycloak/data:/opt/keycloak/data  # Mount thư mục dữ liệu
       - ./certs:/opt/keycloak/conf/certs  # Mount chứng chỉ SSL
+
 networks:
   keycloak-network:
     driver: bridge
+
 volumes:
   postgres_data:
     driver: local
